@@ -1,14 +1,17 @@
-FROM continuumio/miniconda3
+FROM continuumio/miniconda:latest
 
-WORKDIR /app
+WORKDIR /home/docker_conda_template
 
-# Make RUN commands use the new environment:
-SHELL ["conda", "run", "-n", "myenv", "/bin/bash", "-c"]
+COPY * ./
 
-# Make sure the environment is activated:
-RUN echo "Make sure flask is installed:"
-RUN python -c "import flask"
+RUN chmod +x boot.sh
 
-# The code to run when container is started:
-COPY . .
-ENTRYPOINT ["conda", "run", "--no-capture-output", "-n", "myenv", "python", "app.py"]
+RUN conda env create -f environment.yml
+
+RUN echo "source activate baseapi" > ~/.bashrc
+ENV PATH /opt/conda/envs/baseapi/bin:$PATH
+
+EXPOSE 5000
+
+ENTRYPOINT ["python"]
+CMD ["app.py"]
