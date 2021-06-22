@@ -1,5 +1,20 @@
 #!/usr/bin/python
+import os
 from configparser import ConfigParser
+
+
+def configWithEnvironmentVariables(db):
+    if 'DATABASE_HOST' in os.environ:
+        db['host'] = os.environ['DATABASE_HOST']
+    if 'DATABASE_NAME' in os.environ:
+        db['database'] = os.environ['DATABASE_NAME']
+    if 'DATABASE_PORT' in os.environ:
+        db['port'] = os.environ['DATABASE_PORT']
+    if 'DATABASE_USERNAME' in os.environ:
+        db['user'] = os.environ['DATABASE_USERNAME']
+    if 'DATABASE_PASSWORD' in os.environ:
+        db['password'] = os.environ['DATABASE_PASSWORD']
+    return db
 
 
 def config(filename='database.ini', section='postgresql'):
@@ -18,4 +33,6 @@ def config(filename='database.ini', section='postgresql'):
         raise Exception(
             'Section {0} not found in the {1} file'.format(section, filename))
 
-    return db
+    db1 = configWithEnvironmentVariables(db)
+    print(db1)
+    return db1

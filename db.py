@@ -82,13 +82,17 @@ def get_start_date(period, current_date):
 
 def db_connection():
     conn = None
-    # read connection parameters
-    params = config()
+    try:
+        # read connection parameters
+        params = config()
 
-    # connect to the PostgreSQL server
-    print('Connecting to the PostgreSQL database...')
-    conn = psycopg2.connect(**params)
-    return conn
+        # connect to the PostgreSQL server
+        print('Connecting to the PostgreSQL database...')
+        conn = psycopg2.connect(**params)
+        return conn
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+        return None
 
 
 def process_study(symbol, period, func):

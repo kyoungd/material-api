@@ -6,5 +6,5 @@ https://softwarejargon.com/dockerizing-python-flask-app-and-conda-environment/
 
 # ---------- MATERIAL-API IMAGE
 
-sudo docker build -t material-api .
-docker tun -it -p 5000:5000 material-api
+sudo docker build -t material-twint .
+docker run -it -p 8101:8101 material-twint

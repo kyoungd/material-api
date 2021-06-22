@@ -1,0 +1,45 @@
+version: "3.7"
+
+services:
+  db:
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: Service$$11
+      POSTGRES_USER: postgres
+    volumes:
+      - ../db:/var/lib/postgresql/data
+    networks:
+      - level100
+
+  material-server:
+    image: material-server
+    ports:
+      - "1337:1337"
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; npm start'
+    networks:
+      - level100
+    environment:
+      - DATABASE_CLIENT=postgres
+      - DATABASE_NAME=webscrapper
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=Service$$11
+    depends_on:
+      - db
+
+  material-api:
+    image: material-api
+    ports:
+      - 5000:5000
+    networks:
+      - level100
+    environment:
+      - DATABASE_HOST=db
+    depends_on:
+      - material-server
+
+networks:
+  level100: {}
